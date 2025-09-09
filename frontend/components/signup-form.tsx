@@ -75,7 +75,7 @@ export default function SignupFormDemo({
             <Label htmlFor="firstname">First name</Label>
             <Input
               id="firstname"
-              placeholder="Tyler"
+              placeholder="Task"
               type="text"
               value={first}
               onChange={(e) => setFirst(e.target.value)}
@@ -85,7 +85,7 @@ export default function SignupFormDemo({
             <Label htmlFor="lastname">Last name</Label>
             <Input
               id="lastname"
-              placeholder="Durden"
+              placeholder="Management"
               type="text"
               value={last}
               onChange={(e) => setLast(e.target.value)}
@@ -96,7 +96,7 @@ export default function SignupFormDemo({
           <Label htmlFor="email">Email Address</Label>
           <Input
             id="email"
-            placeholder="projectmayhem@fc.com"
+            placeholder="projectassign@tm.com"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}

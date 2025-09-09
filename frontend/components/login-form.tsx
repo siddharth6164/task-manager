@@ -76,7 +76,7 @@ export function LoginForm({
                 <Input
                   id="email"
                   type="email"
-                  placeholder="m@example.com"
+                  placeholder="projectassign@tm.com"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -95,6 +95,7 @@ export function LoginForm({
                 <Input
                   id="password"
                   type="password"
+                  placeholder="********"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -106,7 +107,7 @@ export function LoginForm({
                   Login
                 </Button>
                 <Button type="button" variant="outline" className="w-full">
-                  Login with Google
+                  Login with Google (Coming Soon)
                 </Button>
               </div>
             </div>
