@@ -890,12 +890,26 @@ function TableCellViewer({ item }: { item: TaskItem }) {
               </div>
               <div className="flex flex-col gap-3">
                 <Label htmlFor="limit">Due Date</Label>
-                <Input id="limit" defaultValue={item.assignedTo} />
+                <Input
+                  id="limit"
+                  defaultValue={
+                    typeof item.assignedTo === "string"
+                      ? item.assignedTo
+                      : item.assignedTo?.name ||
+                        item.assignedTo?.email ||
+                        item.assignedTo?._id ||
+                        ""
+                  }
+                />
               </div>
             </div>
             <div className="flex flex-col gap-3">
               <Label htmlFor="reviewer">Assigned To </Label>
-              <Select defaultValue={item.assignedTo}>
+              <Select defaultValue={
+                typeof item.assignedTo === "string"
+                  ? item.assignedTo
+                  : item.assignedTo?._id || ""
+              }>
                 <SelectTrigger id="reviewer" className="w-full">
                   <SelectValue placeholder="Select a reviewer" />
                 </SelectTrigger>
