@@ -1,6 +1,5 @@
 require('dotenv').config();
 const express = require('express');
-const cors = require('cors');
 const mongoose = require('mongoose');
 
 // Route Imports
@@ -21,10 +20,20 @@ mongoose.connect(process.env.MONGO_URI, {
   .catch(err => console.error('❌ MongoDB connection error:', err));
 
 // ✅ Middleware
-app.use(cors({
-  origin: "http://localhost:3000",
-  origin:"https://task-manager-beta-azure.vercel.app", // You can set this to your frontend URL
-  credentials: true,
+const allowedOrigins = [
+  'https://task-manager-beta-azure.vercel.app',
+  'https://task-manager-p6q5.vercel.app'
+];
+
+app.use(require('cors')({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
 }));
 app.use(express.json());
 
