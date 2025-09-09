@@ -22,7 +22,7 @@ mongoose.connect(process.env.MONGO_URI, {
 // ✅ Middleware
 const allowedOrigins = [
   'https://task-manager-beta-azure.vercel.app',
-  'https://task-manager-p6q5.vercel.app'
+  'https://taskmanagerbysid.vercel.app'
 ];
 
 app.use(require('cors')({
