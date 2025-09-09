@@ -1,0 +1,147 @@
+[
+  {
+    "id": 1,
+    "task": "Cover page",
+    "priority": "Low",
+    "status": "In Process",
+    "target": "18 Apr",
+    "limit": "5",
+    "reviewer": "Eddie Lake"
+  },
+  {
+    "id": 2,
+    "task": "Table of contents",
+    "priority": "High",
+    "status": "Not Started",
+    "target": "01 Feb",
+    "limit": "24",
+    "reviewer": "Eddie Lake"
+  },
+  {
+    "id": 3,
+    "task": "Executive summary",
+    "priority": "Mid",
+    "status": "Done",
+    "target": "28 Nov",
+    "limit": "13",
+    "reviewer": "Eddie Lake"
+  },
+  {
+    "id": 4,
+    "task": "Technical approach",
+    "priority": "Low",
+    "status": "Done",
+    "target": "31 Mar",
+    "limit": "23",
+    "reviewer": "Jamik Tashpulatov"
+  },
+  {
+    "id": 5,
+    "task": "Design",
+    "priority": "Mid",
+    "status": "In Process",
+    "target": "19 Jun",
+    "limit": "16",
+    "reviewer": "Jamik Tashpulatov"
+  },
+  {
+    "id": 6,
+    "task": "Capabilities",
+    "priority": "High",
+    "status": "In Process",
+    "target": "08 May",
+    "limit": "8",
+    "reviewer": "Jamik Tashpulatov"
+  },
+  {
+    "id": 7,
+    "task": "Integration with existing systems",
+    "priority": "High",
+    "status": "In Process",
+    "target": "15 Mar",
+    "limit": "21",
+    "reviewer": "Jamik Tashpulatov"
+  },
+  {
+    "id": 8,
+    "task": "Innovation and Advantages",
+    "priority": "Mid",
+    "status": "Done",
+    "target": "24 Nov",
+    "limit": "26",
+    "reviewer": "Assign reviewer"
+  },
+  {
+    "id": 9,
+    "task": "Overview of EMR's Innovative Solutions",
+    "priority": "Low",
+    "status": "Done",
+    "target": "28 Oct",
+    "limit": "23",
+    "reviewer": "Assign reviewer"
+  },
+  {
+    "id": 10,
+    "task": "Advanced Algorithms and Machine Learning",
+    "priority": "Low",
+    "status": "Done",
+    "target": "21 Dec",
+    "limit": "28",
+    "reviewer": "Assign reviewer"
+  },
+  {
+    "id": 11,
+    "task": "Adaptive Communication Protocols",
+    "priority": "Mid",
+    "status": "Done",
+    "target": "18 Sep",
+    "limit": "31",
+    "reviewer": "Assign reviewer"
+  },
+  {
+    "id": 12,
+    "task": "Advantages Over Current Technologies",
+    "priority": "Mid",
+    "status": "Done",
+    "target": "10 Jul",
+    "limit": "0",
+    "reviewer": "Assign reviewer"
+  },
+  {
+    "id": 13,
+    "task": "Past Performance",
+    "priority": "High",
+    "status": "Done",
+    "target": "02 Feb",
+    "limit": "33",
+    "reviewer": "Assign reviewer"
+  },
+  {
+    "id": 14,
+    "task": "Customer Feedback and Satisfaction Levels",
+    "priority": "High",
+    "status": "Done",
+    "target": "22 Jan",
+    "limit": "34",
+    "reviewer": "Assign reviewer"
+  },
+  {
+    "id": 15,
+    "task": "Implementation Challenges and Solutions",
+    "priority": "High",
+    "status": "Done",
+    "target": "11 Apr",
+    "limit": "35",
+    "reviewer": "Assign reviewer"
+  },
+  {
+    "id": 16,
+    "task": "Security Measures and Data Protection Policies",
+    "priority": "Low",
+    "status": "In Process",
+    "target": "18 May",
+    "limit": "36",
+    "reviewer": "Assign reviewer"
+  }
+  
+]
