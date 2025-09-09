@@ -29,7 +29,7 @@ export default function SignupFormDemo({
     e.preventDefault();
     setError("");
 
-    const name = `${first} ${last}`;
+    // const name = `${first} ${last}`;
 
     try {
       const res = await fetch(
@@ -58,7 +58,7 @@ export default function SignupFormDemo({
 
       console.log("Signup successful");
       if (onToggleForm) onToggleForm(); // switch to login form
-    } catch (err) {
+    } catch {
       setError("Something went wrong");
     }
   };

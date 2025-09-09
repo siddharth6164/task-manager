@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import {
-  IconCreditCard,
   IconDotsVertical,
   IconLogout,
   IconNotification,
@@ -27,7 +26,7 @@ import {
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 import { CardDemo } from "./NotificationCard";
-import { CardWithForm } from "./cardWithForm";
+// import { CardWithForm } from "./cardWithForm";
 
 export function NavUser() {
   const [user, setUser] = useState({
@@ -41,11 +40,11 @@ export function NavUser() {
   const [error, setError] = useState<string | null>(null);
   const { isMobile } = useSidebar();
 
-  const [showCard, setShowCard] = useState(false);
+  const [showCard] = useState(false);
 
-  const handleToggleCard = () => {
-    setShowCard((prev) => !prev);
-  };
+  // const handleToggleCard = () => {
+  //   setShowCard((prev) => !prev);
+  // };
 
   useEffect(() => {
     const fetchUserData = async () => {

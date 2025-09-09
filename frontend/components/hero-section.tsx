@@ -3,7 +3,7 @@
 import { motion } from "motion/react";
 import { useRef, useState } from "react";
 import AuthPage from "../app/auth/AuthPage"; // New import
-import Link from "next/link";
+// import Link from "next/link";
 import { SectionCards } from "@/components/section-cards";
 
 export default function HeroSectionOne() {

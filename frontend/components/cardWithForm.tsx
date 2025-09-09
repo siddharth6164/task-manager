@@ -1,7 +1,7 @@
-import * as React from "react"
-import { useState } from "react"
+import * as React from "react";
+import { useState } from "react";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -9,20 +9,20 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { toast } from "sonner" // ✅ Correct Sonner import
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner"; // ✅ Correct Sonner import
 
 export function CardWithForm() {
-  const [projectName, setProjectName] = useState("")
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [projectName, setProjectName] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
+    e.preventDefault();
+    setIsSubmitting(true);
 
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
     try {
       // First, check if project with same name exists
@@ -38,7 +38,7 @@ export function CardWithForm() {
 
       const existingProjects = await checkResponse.json();
       const projectExists = existingProjects.some(
-        (project: { name: string }) => 
+        (project: { name: string }) =>
           project.name.toLowerCase() === projectName.toLowerCase()
       );
 
@@ -56,23 +56,25 @@ export function CardWithForm() {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         body: JSON.stringify({ name: projectName }),
-      })
+      });
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (response.ok) {
-        toast.success("Project created successfully!")
-        setProjectName("")
+        toast.success("Project created successfully!");
+        setProjectName("");
       } else {
-        toast.error(data.error || "Something went wrong")
+        toast.error(data.error || "Something went wrong");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error:", error);
-      toast.error(error.message || "Network error occurred")
+      const message =
+        error instanceof Error ? error.message : "Network error occurred";
+      toast.error(message);
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   return (
     <Card className="w-[350px]">
@@ -102,5 +104,5 @@ export function CardWithForm() {
         </form>
       </CardContent>
     </Card>
-  )
+  );
 }

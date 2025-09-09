@@ -111,7 +111,7 @@ export function TaskForm({ onSuccess }: { onSuccess?: () => void }) {
 
       if (!res.ok) throw new Error("Failed to create task");
 
-      const data = await res.json();
+      await res.json();
       toast.success("Task created successfully!");
       if (onSuccess) onSuccess();
 

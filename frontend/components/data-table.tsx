@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 import {
   DndContext,
   KeyboardSensor,
@@ -11,15 +11,15 @@ import {
   useSensors,
   type DragEndEvent,
   type UniqueIdentifier,
-} from "@dnd-kit/core"
-import { restrictToVerticalAxis } from "@dnd-kit/modifiers"
+} from "@dnd-kit/core";
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import {
   SortableContext,
   arrayMove,
   useSortable,
   verticalListSortingStrategy,
-} from "@dnd-kit/sortable"
-import { CSS } from "@dnd-kit/utilities"
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import {
   IconChevronDown,
   IconChevronLeft,
@@ -31,9 +31,8 @@ import {
   IconGripVertical,
   IconLayoutColumns,
   IconLoader,
-  IconPlus,
   IconTrendingUp,
-} from "@tabler/icons-react"
+} from "@tabler/icons-react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -48,31 +47,30 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from "@tanstack/react-table"
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
-import { toast } from "sonner"
-import { useEffect, useState } from "react"
+} from "@tanstack/react-table";
+import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
+import { toast } from "sonner";
+import { useEffect, useState } from "react";
 
-import { useIsMobile } from "@/hooks/use-mobile"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { useIsMobile } from "@/hooks/use-mobile";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart"
-import { Checkbox } from "@/components/ui/checkbox"
+} from "@/components/ui/chart";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Drawer,
   DrawerClose,
   DrawerContent,
-  DrawerDescription,
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@/components/ui/drawer"
+} from "@/components/ui/drawer";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -80,17 +78,17 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { Separator } from "@/components/ui/separator"
+} from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
 import {
   Table,
   TableBody,
@@ -98,38 +96,34 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs"
+} from "@/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export interface TaskItem {
-  _id: string
-  title: string
-  description?: string
-  priority: string
-  status: string
-  dueDate: string
-  assignedTo: {
-    _id: string
-    email: string
-    name?: string
-  } | string
-  project?: string
-  createdBy: string
+  _id: string;
+  title: string;
+  description?: string;
+  priority: string;
+  status: string;
+  dueDate: string;
+  assignedTo:
+    | {
+        _id: string;
+        email: string;
+        name?: string;
+      }
+    | string;
+  project?: string;
+  createdBy: string;
 }
 
 // Create a separate component for the drag handle
 function DragHandle({ id }: { id: string }) {
   const { attributes, listeners } = useSortable({
     id,
-  })
+  });
 
   return (
-    
     <Button
       {...attributes}
       {...listeners}
@@ -140,20 +134,20 @@ function DragHandle({ id }: { id: string }) {
       <IconGripVertical className="text-muted-foreground size-3" />
       <span className="sr-only">Drag to reorder</span>
     </Button>
-  )
+  );
 }
 
 const priorityOrder = {
   Low: 1,
   Mid: 2,
   High: 3,
-}
+};
 
 const statusOrder = {
   "Not Started": 1,
   "In Progress": 2,
   Done: 3,
-}
+};
 
 const columns: ColumnDef<TaskItem>[] = [
   {
@@ -191,7 +185,7 @@ const columns: ColumnDef<TaskItem>[] = [
     accessorKey: "title",
     header: "Task",
     cell: ({ row }) => {
-      return <TableCellViewer item={row.original} />
+      return <TableCellViewer item={row.original} />;
     },
     enableHiding: false,
   },
@@ -199,9 +193,13 @@ const columns: ColumnDef<TaskItem>[] = [
     accessorKey: "priority",
     header: "Priority",
     sortingFn: (rowA, rowB, columnId) => {
-      const a = priorityOrder[rowA.getValue(columnId) as keyof typeof priorityOrder] ?? 0
-      const b = priorityOrder[rowB.getValue(columnId) as keyof typeof priorityOrder] ?? 0
-      return a - b
+      const a =
+        priorityOrder[rowA.getValue(columnId) as keyof typeof priorityOrder] ??
+        0;
+      const b =
+        priorityOrder[rowB.getValue(columnId) as keyof typeof priorityOrder] ??
+        0;
+      return a - b;
     },
     cell: ({ row }) => (
       <div className="w-32">
@@ -215,9 +213,11 @@ const columns: ColumnDef<TaskItem>[] = [
     accessorKey: "status",
     header: "Status",
     sortingFn: (rowA, rowB, columnId) => {
-      const a = statusOrder[rowA.getValue(columnId) as keyof typeof statusOrder] ?? 0
-      const b = statusOrder[rowB.getValue(columnId) as keyof typeof statusOrder] ?? 0
-      return a - b
+      const a =
+        statusOrder[rowA.getValue(columnId) as keyof typeof statusOrder] ?? 0;
+      const b =
+        statusOrder[rowB.getValue(columnId) as keyof typeof statusOrder] ?? 0;
+      return a - b;
     },
     cell: ({ row }) => (
       <Badge variant="outline" className="text-muted-foreground px-1.5">
@@ -236,22 +236,27 @@ const columns: ColumnDef<TaskItem>[] = [
     cell: ({ row }) => (
       <form
         onSubmit={async (e) => {
-          e.preventDefault()
+          e.preventDefault();
           try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tasks/${row.original._id}`, {
-              method: 'PUT',
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-              },
-              body: JSON.stringify({ dueDate: e.currentTarget.dueDate.value }),
-            })
-            
-            if (!response.ok) throw new Error('Failed to update due date')
-            
-            toast.success('Due date updated successfully')
-          } catch (err) {
-            toast.error('Failed to update due date')
+            const response = await fetch(
+              `${process.env.NEXT_PUBLIC_API_URL}/api/tasks/${row.original._id}`,
+              {
+                method: "PUT",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+                body: JSON.stringify({
+                  dueDate: e.currentTarget.dueDate.value,
+                }),
+              }
+            );
+
+            if (!response.ok) throw new Error("Failed to update due date");
+
+            toast.success("Due date updated successfully");
+          } catch {
+            toast.error("Failed to update due date");
           }
         }}
       >
@@ -272,7 +277,7 @@ const columns: ColumnDef<TaskItem>[] = [
     header: "Assigned To",
     cell: ({ row }) => {
       const assignedTo = row.original.assignedTo;
-      const isAssigned = typeof assignedTo === 'object' && assignedTo !== null;
+      const isAssigned = typeof assignedTo === "object" && assignedTo !== null;
 
       if (isAssigned) {
         return assignedTo.name || assignedTo.email;
@@ -282,20 +287,23 @@ const columns: ColumnDef<TaskItem>[] = [
         <Select
           onValueChange={async (value) => {
             try {
-              const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tasks/${row.original._id}`, {
-                method: 'PUT',
-                headers: {
-                  'Content-Type': 'application/json',
-                  Authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
-                body: JSON.stringify({ assignedTo: value }),
-              })
-              
-              if (!response.ok) throw new Error('Failed to assign task')
-              
-              toast.success('Task assigned successfully')
-            } catch (err) {
-              toast.error('Failed to assign task')
+              const response = await fetch(
+                `${process.env.NEXT_PUBLIC_API_URL}/api/tasks/${row.original._id}`,
+                {
+                  method: "PUT",
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                  },
+                  body: JSON.stringify({ assignedTo: value }),
+                }
+              );
+
+              if (!response.ok) throw new Error("Failed to assign task");
+
+              toast.success("Task assigned successfully");
+            } catch {
+              toast.error("Failed to assign task");
             }
           }}
         >
@@ -308,12 +316,10 @@ const columns: ColumnDef<TaskItem>[] = [
           </SelectTrigger>
           <SelectContent align="end">
             <SelectItem value="Eddie Lake">Eddie Lake</SelectItem>
-            <SelectItem value="Jamik Tashpulatov">
-              Jamik Tashpulatov
-            </SelectItem>
+            <SelectItem value="Jamik Tashpulatov">Jamik Tashpulatov</SelectItem>
           </SelectContent>
         </Select>
-      )
+      );
     },
   },
   {
@@ -340,12 +346,12 @@ const columns: ColumnDef<TaskItem>[] = [
       </DropdownMenu>
     ),
   },
-]
+];
 
 function DraggableRow({ row }: { row: Row<TaskItem> }) {
   const { transform, transition, setNodeRef, isDragging } = useSortable({
     id: row.original._id,
-  })
+  });
 
   return (
     <TableRow
@@ -364,61 +370,67 @@ function DraggableRow({ row }: { row: Row<TaskItem> }) {
         </TableCell>
       ))}
     </TableRow>
-  )
+  );
 }
 
 export function DataTable() {
-  const [data, setData] = useState<TaskItem[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [rowSelection, setRowSelection] = useState({})
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
-  const [sorting, setSorting] = React.useState<SortingState>([])
+  const [data, setData] = useState<TaskItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [rowSelection, setRowSelection] = useState({});
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({});
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  );
+  const [sorting, setSorting] = React.useState<SortingState>([]);
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
     pageSize: 10,
-  })
-  const sortableId = React.useId()
+  });
+  const sortableId = React.useId();
   const sensors = useSensors(
     useSensor(MouseSensor, {}),
     useSensor(TouchSensor, {}),
     useSensor(KeyboardSensor, {})
-  )
+  );
 
   const dataIds = React.useMemo<UniqueIdentifier[]>(
     () => data?.map(({ _id }) => _id) || [],
     [data]
-  )
+  );
 
   // Fetch tasks from backend
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        setLoading(true)
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tasks`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        })
+        setLoading(true);
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/tasks`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
 
         if (!response.ok) {
-          throw new Error('Failed to fetch tasks')
+          throw new Error("Failed to fetch tasks");
         }
 
-        const tasks = await response.json()
-        setData(tasks)
-        setError(null)
+        const tasks = await response.json();
+        setData(tasks);
+        setError(null);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch tasks')
-        toast.error('Failed to fetch tasks')
+        setError(err instanceof Error ? err.message : "Failed to fetch tasks");
+        toast.error("Failed to fetch tasks");
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchTasks()
-  }, [])
+    fetchTasks();
+  }, []);
 
   const table = useReactTable({
     data,
@@ -443,16 +455,16 @@ export function DataTable() {
     getSortedRowModel: getSortedRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
-  })
+  });
 
   function handleDragEnd(event: DragEndEvent) {
-    const { active, over } = event
+    const { active, over } = event;
     if (active && over && active.id !== over.id) {
       setData((data) => {
-        const oldIndex = dataIds.indexOf(active.id)
-        const newIndex = dataIds.indexOf(over.id)
-        return arrayMove(data, oldIndex, newIndex)
-      })
+        const oldIndex = dataIds.indexOf(active.id);
+        const newIndex = dataIds.indexOf(over.id);
+        return arrayMove(data, oldIndex, newIndex);
+      });
     }
   }
 
@@ -462,7 +474,7 @@ export function DataTable() {
       <div className="flex items-center justify-center h-96">
         <IconLoader className="h-8 w-8 animate-spin" />
       </div>
-    )
+    );
   }
 
   // Add error state
@@ -471,7 +483,7 @@ export function DataTable() {
       <div className="flex items-center justify-center h-96">
         <div className="text-red-500">{error}</div>
       </div>
-    )
+    );
   }
 
   return (
@@ -538,43 +550,43 @@ export function DataTable() {
                     >
                       {column.id}
                     </DropdownMenuCheckboxItem>
-                  )
+                  );
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
 
-          
-          
           <Select
-  onValueChange={(value) => {
-    switch (value) {
-      case "priority-low": // Low → High
-        setSorting([{ id: "priority", desc: false }])
-        break
-      case "priority-high": // High → Low
-        setSorting([{ id: "priority", desc: true }])
-        break
-      case "due-date":
-        setSorting([{ id: "dueDate", desc: false }])
-        break
-      case "status":
-        setSorting([{ id: "status", desc: false }])
-        break
-    }
-  }}
->
-  <SelectTrigger className="w-[180px]" size="sm">
-    <SelectValue placeholder="Sort by" />
-  </SelectTrigger>
-  <SelectContent align="end">
-    <SelectItem value="priority-low">Priority: Low to High</SelectItem>
-    <SelectItem value="priority-high">Priority: High to Low</SelectItem>
-    <SelectItem value="due-date">Due Date</SelectItem>
-    <SelectItem value="status">Status</SelectItem>
-  </SelectContent>
-</Select>
-
-
+            onValueChange={(value) => {
+              switch (value) {
+                case "priority-low": // Low → High
+                  setSorting([{ id: "priority", desc: false }]);
+                  break;
+                case "priority-high": // High → Low
+                  setSorting([{ id: "priority", desc: true }]);
+                  break;
+                case "due-date":
+                  setSorting([{ id: "dueDate", desc: false }]);
+                  break;
+                case "status":
+                  setSorting([{ id: "status", desc: false }]);
+                  break;
+              }
+            }}
+          >
+            <SelectTrigger className="w-[180px]" size="sm">
+              <SelectValue placeholder="Sort by" />
+            </SelectTrigger>
+            <SelectContent align="end">
+              <SelectItem value="priority-low">
+                Priority: Low to High
+              </SelectItem>
+              <SelectItem value="priority-high">
+                Priority: High to Low
+              </SelectItem>
+              <SelectItem value="due-date">Due Date</SelectItem>
+              <SelectItem value="status">Status</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
       <TabsContent
@@ -603,7 +615,7 @@ export function DataTable() {
                                 header.getContext()
                               )}
                         </TableHead>
-                      )
+                      );
                     })}
                   </TableRow>
                 ))}
@@ -645,7 +657,7 @@ export function DataTable() {
               <Select
                 value={`${table.getState().pagination.pageSize}`}
                 onValueChange={(value) => {
-                  table.setPageSize(Number(value))
+                  table.setPageSize(Number(value));
                 }}
               >
                 <SelectTrigger size="sm" className="w-20" id="rows-per-page">
@@ -693,7 +705,7 @@ export function DataTable() {
                 onClick={() => table.nextPage()}
                 disabled={!table.getCanNextPage()}
               >
-                <span className="sr-only">Go to next page</span>  
+                <span className="sr-only">Go to next page</span>
                 <IconChevronRight />
               </Button>
               <Button
@@ -726,7 +738,7 @@ export function DataTable() {
         <div className="aspect-video w-full flex-1 rounded-lg border border-dashed"></div>
       </TabsContent>
     </Tabs>
-  )
+  );
 }
 
 const chartData = [
@@ -736,7 +748,7 @@ const chartData = [
   { month: "April", desktop: 73, mobile: 190 },
   { month: "May", desktop: 209, mobile: 130 },
   { month: "June", desktop: 214, mobile: 140 },
-]
+];
 
 const chartConfig = {
   desktop: {
@@ -747,10 +759,10 @@ const chartConfig = {
     label: "Mobile",
     color: "var(--primary)",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
 function TableCellViewer({ item }: { item: TaskItem }) {
-  const isMobile = useIsMobile()
+  const isMobile = useIsMobile();
 
   return (
     <Drawer direction={isMobile ? "bottom" : "right"}>
@@ -824,7 +836,7 @@ function TableCellViewer({ item }: { item: TaskItem }) {
               <Separator />
             </>
           )}
-          <form className="flex flex-col gap-4"> 
+          <form className="flex flex-col gap-4">
             <div className="flex flex-col gap-3">
               <Label htmlFor="header">Task Name</Label>
               <p>{item.title}</p>
@@ -906,6 +918,5 @@ function TableCellViewer({ item }: { item: TaskItem }) {
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
-    
-  )
+  );
 }

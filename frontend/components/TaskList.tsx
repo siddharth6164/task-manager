@@ -1,204 +1,240 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { toast } from "sonner"
-import { IconCircleCheckFilled, IconLoader, IconTrash } from "@tabler/icons-react"
-import { format } from "date-fns"
+import { useEffect, useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { toast } from "sonner";
+import {
+  IconCircleCheckFilled,
+  IconLoader,
+  IconTrash,
+} from "@tabler/icons-react";
+// import { format } from "date-fns"
 
 interface Task {
-  _id: string
-  title: string
-  description?: string
-  priority: string
-  status: string
-  dueDate: string
-  assignedTo: {
-    _id: string
-    email: string
-    name?: string
-  } | string
-  project?: string
-  createdBy: string
+  _id: string;
+  title: string;
+  description?: string;
+  priority: string;
+  status: string;
+  dueDate: string;
+  assignedTo:
+    | {
+        _id: string;
+        email: string;
+        name?: string;
+      }
+    | string;
+  project?: string;
+  createdBy: string;
 }
 
 interface User {
-  _id: string
-  name: string
-  email: string
+  _id: string;
+  name: string;
+  email: string;
 }
 
 export function TaskList() {
-  const [tasks, setTasks] = useState<Task[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [users, setUsers] = useState<User[]>([])
-  const [searchQuery, setSearchQuery] = useState("")
-  const [statusFilter, setStatusFilter] = useState("all")
-  const [priorityFilter, setPriorityFilter] = useState("all")
-  const [sortBy, setSortBy] = useState("dueDate")
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc")
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [users, setUsers] = useState<User[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [priorityFilter, setPriorityFilter] = useState("all");
+  const [sortBy, setSortBy] = useState("dueDate");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
   // Fetch tasks from backend
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        setLoading(true)
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tasks`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        })
+        setLoading(true);
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/tasks`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
 
         if (!response.ok) {
-          throw new Error('Failed to fetch tasks')
+          throw new Error("Failed to fetch tasks");
         }
 
-        const data = await response.json()
-        setTasks(data)
-        setError(null)
+        const data = await response.json();
+        setTasks(data);
+        setError(null);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch tasks')
-        toast.error('Failed to fetch tasks')
+        setError(err instanceof Error ? err.message : "Failed to fetch tasks");
+        toast.error("Failed to fetch tasks");
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchTasks()
-  }, [])
+    fetchTasks();
+  }, []);
 
   // Fetch users for assignment
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        })
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/users`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
 
         if (!response.ok) {
-          throw new Error('Failed to fetch users')
+          throw new Error("Failed to fetch users");
         }
 
-        const data = await response.json()
-        setUsers(data)
+        const data = await response.json();
+        setUsers(data);
       } catch (err) {
-        console.error('Error fetching users:', err)
-        toast.error('Failed to fetch users')
+        console.error("Error fetching users:", err);
+        toast.error("Failed to fetch users");
       }
-    }
+    };
 
-    fetchUsers()
-  }, [])
+    fetchUsers();
+  }, []);
 
   // Handle task status update
   const handleStatusChange = async (taskId: string, newStatus: string) => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tasks/${taskId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify({ status: newStatus }),
-      })
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/tasks/${taskId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({ status: newStatus }),
+        }
+      );
 
       if (!response.ok) {
-        throw new Error('Failed to update task status')
+        throw new Error("Failed to update task status");
       }
 
-      const updatedTask = await response.json()
-      setTasks(tasks.map(task => task._id === taskId ? updatedTask : task))
-      toast.success('Task status updated successfully')
+      const updatedTask = await response.json();
+      setTasks(tasks.map((task) => (task._id === taskId ? updatedTask : task)));
+      toast.success("Task status updated successfully");
     } catch (err) {
-      console.error('Error updating task status:', err)
-      toast.error('Failed to update task status')
+      console.error("Error updating task status:", err);
+      toast.error("Failed to update task status");
     }
-  }
+  };
 
   // Handle task assignment
   const handleAssignTask = async (taskId: string, userId: string) => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tasks/${taskId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify({ assignedTo: userId }),
-      })
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/tasks/${taskId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({ assignedTo: userId }),
+        }
+      );
 
       if (!response.ok) {
-        throw new Error('Failed to assign task')
+        throw new Error("Failed to assign task");
       }
 
-      const updatedTask = await response.json()
-      setTasks(tasks.map(task => task._id === taskId ? updatedTask : task))
-      toast.success('Task assigned successfully')
+      const updatedTask = await response.json();
+      setTasks(tasks.map((task) => (task._id === taskId ? updatedTask : task)));
+      toast.success("Task assigned successfully");
     } catch (err) {
-      console.error('Error assigning task:', err)
-      toast.error('Failed to assign task')
+      console.error("Error assigning task:", err);
+      toast.error("Failed to assign task");
     }
-  }
+  };
 
   // Handle task deletion
   const handleDeleteTask = async (taskId: string) => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tasks/${taskId}`, {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      })
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/tasks/${taskId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
 
       if (!response.ok) {
-        throw new Error('Failed to delete task')
+        throw new Error("Failed to delete task");
       }
 
-      setTasks(tasks.filter(task => task._id !== taskId))
-      toast.success('Task deleted successfully')
+      setTasks(tasks.filter((task) => task._id !== taskId));
+      toast.success("Task deleted successfully");
     } catch (err) {
-      console.error('Error deleting task:', err)
-      toast.error('Failed to delete task')
+      console.error("Error deleting task:", err);
+      toast.error("Failed to delete task");
     }
-  }
+  };
 
   // Filter and sort tasks
   const filteredAndSortedTasks = tasks
-    .filter(task => {
-      const matchesSearch = task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        task.description?.toLowerCase().includes(searchQuery.toLowerCase())
-      const matchesStatus = statusFilter === 'all' || task.status === statusFilter
-      const matchesPriority = priorityFilter === 'all' || task.priority === priorityFilter
-      return matchesSearch && matchesStatus && matchesPriority
+    .filter((task) => {
+      const matchesSearch =
+        task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        task.description?.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesStatus =
+        statusFilter === "all" || task.status === statusFilter;
+      const matchesPriority =
+        priorityFilter === "all" || task.priority === priorityFilter;
+      return matchesSearch && matchesStatus && matchesPriority;
     })
     .sort((a, b) => {
-      if (sortBy === 'dueDate') {
-        return sortOrder === 'asc'
+      if (sortBy === "dueDate") {
+        return sortOrder === "asc"
           ? new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
-          : new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime()
+          : new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime();
       }
-      if (sortBy === 'priority') {
-        const priorityOrder = { high: 3, medium: 2, low: 1 }
-        return sortOrder === 'asc'
-          ? priorityOrder[a.priority as keyof typeof priorityOrder] - priorityOrder[b.priority as keyof typeof priorityOrder]
-          : priorityOrder[b.priority as keyof typeof priorityOrder] - priorityOrder[a.priority as keyof typeof priorityOrder]
+      if (sortBy === "priority") {
+        const priorityOrder = { high: 3, medium: 2, low: 1 };
+        return sortOrder === "asc"
+          ? priorityOrder[a.priority as keyof typeof priorityOrder] -
+              priorityOrder[b.priority as keyof typeof priorityOrder]
+          : priorityOrder[b.priority as keyof typeof priorityOrder] -
+              priorityOrder[a.priority as keyof typeof priorityOrder];
       }
-      return 0
-    })
+      return 0;
+    });
 
   if (loading) {
-    return <div className="flex items-center justify-center h-64">Loading tasks...</div>
+    return (
+      <div className="flex items-center justify-center h-64">
+        Loading tasks...
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="text-red-500 text-center">{error}</div>
+    return <div className="text-red-500 text-center">{error}</div>;
   }
 
   return (
@@ -244,9 +280,9 @@ export function TaskList() {
         </Select>
         <Button
           variant="outline"
-          onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+          onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
         >
-          {sortOrder === 'asc' ? '↑' : '↓'}
+          {sortOrder === "asc" ? "↑" : "↓"}
         </Button>
       </div>
 
@@ -260,7 +296,9 @@ export function TaskList() {
             <div className="flex-1">
               <h3 className="font-medium">{task.title}</h3>
               {task.description && (
-                <p className="text-sm text-muted-foreground">{task.description}</p>
+                <p className="text-sm text-muted-foreground">
+                  {task.description}
+                </p>
               )}
             </div>
 
@@ -301,36 +339,48 @@ export function TaskList() {
                   name="dueDate"
                   onChange={async (e) => {
                     try {
-                      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tasks/${task._id}`, {
-                        method: 'PUT',
-                        headers: {
-                          'Content-Type': 'application/json',
-                          Authorization: `Bearer ${localStorage.getItem("token")}`,
-                        },
-                        body: JSON.stringify({ dueDate: e.target.value }),
-                      })
-                      
-                      if (!response.ok) throw new Error('Failed to update due date')
-                      
-                      const updatedTask = await response.json()
-                      setTasks(tasks.map(t => t._id === task._id ? updatedTask : t))
-                      toast.success('Due date updated successfully')
-                    } catch (err) {
-                      toast.error('Failed to update due date')
+                      const response = await fetch(
+                        `${process.env.NEXT_PUBLIC_API_URL}/api/tasks/${task._id}`,
+                        {
+                          method: "PUT",
+                          headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${localStorage.getItem(
+                              "token"
+                            )}`,
+                          },
+                          body: JSON.stringify({ dueDate: e.target.value }),
+                        }
+                      );
+
+                      if (!response.ok)
+                        throw new Error("Failed to update due date");
+
+                      const updatedTask = await response.json();
+                      setTasks(
+                        tasks.map((t) => (t._id === task._id ? updatedTask : t))
+                      );
+                      toast.success("Due date updated successfully");
+                    } catch {
+                      toast.error("Failed to update due date");
                     }
                   }}
                 />
               </div>
 
               <Select
-                value={typeof task.assignedTo === 'object' ? task.assignedTo._id : task.assignedTo}
+                value={
+                  typeof task.assignedTo === "object"
+                    ? task.assignedTo._id
+                    : task.assignedTo
+                }
                 onValueChange={(value) => handleAssignTask(task._id, value)}
               >
                 <SelectTrigger className="w-[150px]">
                   <SelectValue>
-                    {typeof task.assignedTo === 'object'
+                    {typeof task.assignedTo === "object"
                       ? task.assignedTo.name || task.assignedTo.email
-                      : 'Unassigned'}
+                      : "Unassigned"}
                   </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
@@ -355,5 +405,5 @@ export function TaskList() {
         ))}
       </div>
     </div>
-  )
-} 
+  );
+}
