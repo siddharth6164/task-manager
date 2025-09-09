@@ -22,7 +22,8 @@ mongoose.connect(process.env.MONGO_URI, {
 
 // ✅ Middleware
 app.use(cors({
-  origin: "http://localhost:3000", // You can set this to your frontend URL
+  origin: "http://localhost:3000",
+  origin:"https://task-manager-beta-azure.vercel.app", // You can set this to your frontend URL
   credentials: true,
 }));
 app.use(express.json());
